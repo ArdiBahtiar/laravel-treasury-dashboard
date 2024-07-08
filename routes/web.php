@@ -18,6 +18,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/expiry' , 'App\Http\Controllers\IndexController@indexExpiry');
+
+Route::get('/vouchers/search', 'App\Http\Controllers\VoucherController@search');
+Route::get('/vouchers/update', 'App\Http\Controllers\VoucherController@updateExpiry');
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
