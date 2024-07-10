@@ -18,7 +18,7 @@ class IndexController extends Controller
 
     public function indexActivate()
     {
-        //
+        return view('indexes.indexActivate');
     }
 
     public function indexExpiry()

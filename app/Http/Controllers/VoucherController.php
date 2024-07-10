@@ -20,9 +20,50 @@ class VoucherController extends Controller
         //
     }
 
-    public function activate()
+    public function activate(Request $request)
     {
         //
+    }
+
+    public function redeemVoucher(Request $request)
+    {
+        $vocer = $request->input('vocer');
+        $date = date('Y-m-d');
+
+        $cartItem = CartItem::where('folio_id', $vocer)->first();
+
+        if(!$cartItem)
+        {
+            return redirect()->back()->with('error', 'Invalid Bos');
+        }
+
+        if($cartItem->redeemed)
+        {
+            return view('vouchers.ActivatorStatus', ['message' => 'Ticket telah digunakan pada tanggal: ' . $cartItem->redeemed_date]);
+        }
+
+        $order = Order::where('order_id', $cartItem->order_id)->first();
+        if($order->visit_date > $date)
+        {
+            return view('vouchers.ActivatorClaim', ['vocer' => $vocer]);
+        } else {
+            return view('vouchers.ActivatorStatus', ['message' => 'Ticket sudah expired']);
+        }
+    }
+
+    public function confirmVoucher($vocer)
+    {
+        $cartItem = CartItem::where('folio_id', $vocer)->first();
+        if($cartItem && !$cartItem->redeemed)
+        {
+            $cartItem->redeemed = 1;
+            $cartItem->redeemed_date = now()->toDateString();
+            $cartItem->save();
+
+            return redirect('/activate')->with('message', 'Voucher berhasil diklaim!');
+        }
+
+        return redirect('/activate')->with('error', 'Voucher gagal diklaim.');
     }
 
     public function search(Request $request)
@@ -30,7 +71,6 @@ class VoucherController extends Controller
         $query = $request->input('query');      // INI NGAMBIL INPUTAN DENGAN NAME query
         // dd($query);                          // ITU DUMP N DIE, CUMA BUAT LIHAT ISINYA DARI VARIABLE
         $tickets = TicketPool::where('folio_id', '=', $query)->get();
-        // dd($tickets);
         return view('vouchers.searchResult', compact('tickets'));
     }
     
