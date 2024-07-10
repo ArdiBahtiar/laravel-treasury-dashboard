@@ -9,6 +9,8 @@ class Catalog extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+    protected $table = 'catalogs';
     protected $fillable = [
         'catalog_id',
         'product_desc',

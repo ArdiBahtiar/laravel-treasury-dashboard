@@ -19,9 +19,12 @@ Route::get('/', function () {
 });
 
 Route::get('/expiry' , 'App\Http\Controllers\IndexController@indexExpiry');
+Route::get('/catalog', 'App\Http\Controllers\IndexController@indexCatalog');
 
 Route::get('/vouchers/search', 'App\Http\Controllers\VoucherController@search');
-Route::get('/vouchers/update', 'App\Http\Controllers\VoucherController@updateExpiry');
+
+Route::get('/expiry/update', 'App\Http\Controllers\VoucherController@updateExpiry');
+Route::get('/catalog/create', 'App\Http\Controllers\VoucherController@createCatalog');
 
 
 Route::get('/dashboard', function () {

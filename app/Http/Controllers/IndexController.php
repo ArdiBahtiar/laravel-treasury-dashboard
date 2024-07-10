@@ -23,12 +23,12 @@ class IndexController extends Controller
 
     public function indexExpiry()
     {
-        return view('vouchers.indexExpiry');
+        return view('indexes.indexExpiry');
     }
 
     public function indexCatalog()
     {
-        //
+        return view('indexes.indexCatalog');
     }
 
     public function indexGenerate()

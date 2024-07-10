@@ -8,7 +8,7 @@
                 <div class="panel-heading h3 mb-3">Input new Asset</div>
                 <div class="panel-body">
 
-                    <form action="{{ url('/vouchers/update') }}" method="GET">
+                    <form action="{{ url('/expiry/update') }}" method="GET">
                         <input type="text" name="query" placeholder="folio ID">
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Search</button>

@@ -46,9 +46,25 @@ class VoucherController extends Controller
         return view('vouchers.searchResult', ['orders' => $orders]);
     }
 
-    public function createCatalog()
+    public function createCatalog(Request $request)
     {
-        //
+        $catalog_id = $request->input('catalog_id');
+        $product_desc = $request->input('product_desc');
+        $product_price = $request->input('product_price');
+        $product_info = $request->input('product_info');
+
+        $data = [
+            'catalog_id' => $catalog_id,
+            'product_desc' => $product_desc,
+            'product_price' => $product_price,
+            'product_info' => $product_info,
+        ];
+
+        $insert = Catalog::insert($data);
+        // $insert = Catalog::insert("INSERT INTO catalogs (catalog_id, product_desc, product_price, product_info) VALUES ('$catalog_id', '$product_desc', $product_price, '$product_info')");
+
+        return redirect('/catalog')->with('status', $insert);
+        // return redirect()->route('indexes.indexCatalog')->with('status', $insert);
     }
 
     public function generateVoucher()
