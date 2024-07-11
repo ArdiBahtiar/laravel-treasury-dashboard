@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\CartItem;
 use App\Models\Catalog;
 use App\Models\Order;
@@ -15,14 +16,26 @@ class VoucherController extends Controller
         //
     }
 
+    public function checkRegistry(Request $request)
+    {
+        $vocer = $request->input('vocer');
+        
+        $ticket_pools = TicketPool::where('folio_id', $vocer)->first();
+        
+        if($ticket_pools)
+        {
+            return view('vouchers.RegisterClaim', ['vocer' => $vocer]);
+        }
+        else
+        {
+            return redirect()->back()->with('error', 'Invalid Voucher');    
+        }
+    }
+    
     public function register()
     {
-        //
-    }
-
-    public function activate(Request $request)
-    {
-        //
+        $date = date('Y-m-d');
+        $uuid = Str::uuid();
     }
 
     public function redeemVoucher(Request $request)
@@ -65,14 +78,6 @@ class VoucherController extends Controller
 
         return redirect('/activate')->with('error', 'Voucher gagal diklaim.');
     }
-
-    public function search(Request $request)
-    {
-        $query = $request->input('query');      // INI NGAMBIL INPUTAN DENGAN NAME query
-        // dd($query);                          // ITU DUMP N DIE, CUMA BUAT LIHAT ISINYA DARI VARIABLE
-        $tickets = TicketPool::where('folio_id', '=', $query)->get();
-        return view('vouchers.searchResult', compact('tickets'));
-    }
     
     public function updateExpiry(Request $request)
     {
@@ -112,4 +117,11 @@ class VoucherController extends Controller
         //
     }
 
+    // public function search(Request $request)
+    // {
+    //     $query = $request->input('query');      // INI NGAMBIL INPUTAN DENGAN NAME query
+    //     // dd($query);                          // ITU DUMP N DIE, CUMA BUAT LIHAT ISINYA DARI VARIABLE
+    //     $tickets = TicketPool::where('folio_id', '=', $query)->get();
+    //     return view('vouchers.searchResult', compact('tickets'));
+    // }
 }

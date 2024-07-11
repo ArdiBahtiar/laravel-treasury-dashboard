@@ -13,7 +13,7 @@ class IndexController extends Controller
 
     public function indexRegister()
     {
-        //
+        return view('indexes.indexRegister');
     }
 
     public function indexActivate()
