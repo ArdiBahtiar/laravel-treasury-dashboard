@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use App\Models\CartItem;
 use App\Models\Catalog;
 use App\Models\Order;
@@ -19,23 +20,59 @@ class VoucherController extends Controller
     public function checkRegistry(Request $request)
     {
         $vocer = $request->input('vocer');
-        
         $ticket_pools = TicketPool::where('folio_id', $vocer)->first();
         
         if($ticket_pools)
         {
             return view('vouchers.RegisterClaim', ['vocer' => $vocer]);
-        }
-        else
-        {
+        } else {
             return redirect()->back()->with('error', 'Invalid Voucher');    
         }
     }
     
-    public function register()
+    public function registerVoucher(Request $request)
     {
-        $date = date('Y-m-d');
-        $uuid = Str::uuid();
+        $vocer = $request->input('vocer');
+        $date = now()->format('Y-m-d');
+        $tomorrow = now()->addDay()->format('Y-m-d');
+        $uuid = Str::uuid()->toString();
+        
+        $TicketPool = TicketPool::where('folio_id', $vocer)->first();
+
+        if ($TicketPool)
+        {
+            DB::transaction(function () use ($vocer, $uuid, $date, $tomorrow, $TicketPool)
+            {
+                // $catalog = Catalog::find($TicketPool->catalog_id);
+                $catalog = Catalog::where('catalog_id', $TicketPool->catalog_id)->first();
+                TicketPool::where('folio_id', $vocer)->delete();
+                
+                Order::create([
+                    'order_id' => $uuid,
+                    'order_date' => $date,
+                    'visit_date' => $tomorrow,
+                    'cancelled' => 0,
+                    'merchant_info' => '9bf57c2c5d31fef114718441119ae1c9',
+                    'cust_name' => 'freepass',
+                    'cust-email' => '',
+                    'cust_phone' => '',
+                    'total_buy_price' => $catalog->product_price,
+                ]);
+
+                CartItem::create([
+                    'cart_id' => $uuid . '-FP-0',
+                    'folio_id' => $vocer,
+                    'order_id' => $uuid,
+                    'redeemed' => 0,
+                    'redeemed_date' => $date,
+                    'catalog_id' => $catalog->catalog_id,
+                    'product_desc' => $catalog->product_desc,
+                    'product_price' => $catalog->product_price,
+                ]);
+            });
+
+            return redirect('/registerVoucher');
+        }
     }
 
     public function redeemVoucher(Request $request)

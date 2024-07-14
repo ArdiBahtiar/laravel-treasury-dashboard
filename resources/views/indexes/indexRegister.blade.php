@@ -8,7 +8,7 @@
                 <div class="panel-heading h3 mb-3">Register Voucher</div>
                 <div class="panel-body">
 
-                    <form action="{{ url('/register/check') }}" method="POST">
+                    <form action="{{ url('/registerVoucher/check') }}" method="GET">
                         @csrf
                         <label for="vocer">Masukkan kode Voucher: </label> <br>
                         <input type="text" name="vocer" placeholder="folio ID"> <br>

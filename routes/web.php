@@ -21,14 +21,14 @@ Route::get('/', function () {
 Route::get('/expiry' , 'App\Http\Controllers\IndexController@indexExpiry');
 Route::get('/catalog', 'App\Http\Controllers\IndexController@indexCatalog');
 Route::get('/activate', 'App\Http\Controllers\IndexController@indexActivate');
-Route::get('/register', 'App\Http\Controllers\IndexController@indexRegister');
+Route::get('/registerVoucher', 'App\Http\Controllers\IndexController@indexRegister');
 
 Route::get('/expiry/update', 'App\Http\Controllers\VoucherController@updateExpiry');
 Route::get('/catalog/create', 'App\Http\Controllers\VoucherController@createCatalog');
 Route::post('/activate/redeem', 'App\Http\Controllers\VoucherController@redeemVoucher');
 Route::get('/activate/confirm/{vocer}', 'App\Http\Controllers\VoucherController@confirmVoucher');
-Route::post('/register/check', 'App\Http\Controllers\VoucherController@checkRegistry');
-Route::get('/register/checkout', 'App\Http\Controllers\VoucherController@register');
+Route::get('/registerVoucher/check', 'App\Http\Controllers\VoucherController@checkRegistry');
+Route::post('/registerVoucher/checkout', 'App\Http\Controllers\VoucherController@registerVoucher');
 
 // Route::get('/vouchers/search', 'App\Http\Controllers\VoucherController@search');
 
