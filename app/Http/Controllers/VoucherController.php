@@ -12,9 +12,49 @@ use App\Models\TicketPool;
 
 class VoucherController extends Controller
 {
-    public function order() 
+    public function order(Request $request) 
     {
-        //
+        $amount = $request->input('amount');
+        $catalog_id = $request->input('catalog_id');
+        $date = date('Y-m-d');
+        $expiryDate = $request->input('expiry');
+
+        for($i = 0; $i < $amount; $i++)
+        {
+            $uuid = Str::uuid()->toString();
+            DB::transaction(function () use ($uuid, $catalog_id, $date, $expiryDate)
+            {
+                $topVoucher = TicketPool::where('catalog_id', $catalog_id)->first();
+                $catalog = Catalog::where('catalog_id', $catalog_id)->first();
+
+                Order::create([
+                    'order_id' => $uuid,
+                    'order_date' => $date,
+                    'visit_date' => $expiryDate,
+                    'cancelled' => 0,
+                    'merchant_info' => '9bf57c2c5d31fef114718441119ae1c9',
+                    'cust_name' => 'freepass',
+                    'cust_email' => '',
+                    'cust_phone' => '',
+                    'total_buy_price' => $catalog->product_price,
+                ]);
+                
+                CartItem::create([
+                    'cart_id' => $uuid . '-FP-0',
+                    'folio_id' => $topVoucher->folio_id,
+                    'order_id' => $uuid,
+                    'redeemed' => 0,
+                    'redeemed_date' => $date,
+                    'catalog_id' => $catalog->catalog_id,
+                    'product_desc' => $catalog->product_desc,
+                    'product_price' => $catalog->product_price
+                ]);
+
+                $topVoucher->delete();
+            });
+        }
+
+        return redirect('/order');
     }
 
     public function checkRegistry(Request $request)

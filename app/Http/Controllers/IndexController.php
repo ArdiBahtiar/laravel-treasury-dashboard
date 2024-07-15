@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Catalog;
+use App\Models\TicketPool;
 
 class IndexController extends Controller
 {
     public function indexOrder()
     {
-        //
+        $catalogs = Catalog::all();
+        return view('indexes.indexOrder', ['catalogs' => $catalogs]);
     }
 
     public function indexRegister()
