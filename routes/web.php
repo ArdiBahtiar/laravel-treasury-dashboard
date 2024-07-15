@@ -22,6 +22,7 @@ Route::get('/expiry' , 'App\Http\Controllers\IndexController@indexExpiry');
 Route::get('/catalog', 'App\Http\Controllers\IndexController@indexCatalog');
 Route::get('/activate', 'App\Http\Controllers\IndexController@indexActivate');
 Route::get('/registerVoucher', 'App\Http\Controllers\IndexController@indexRegister');
+Route::get('/generate', 'App\Http\Controllers\indexController@indexGenerate');
 
 Route::get('/expiry/update', 'App\Http\Controllers\VoucherController@updateExpiry');
 Route::get('/catalog/create', 'App\Http\Controllers\VoucherController@createCatalog');
@@ -29,6 +30,7 @@ Route::post('/activate/redeem', 'App\Http\Controllers\VoucherController@redeemVo
 Route::get('/activate/confirm/{vocer}', 'App\Http\Controllers\VoucherController@confirmVoucher');
 Route::get('/registerVoucher/check', 'App\Http\Controllers\VoucherController@checkRegistry');
 Route::post('/registerVoucher/checkout', 'App\Http\Controllers\VoucherController@registerVoucher');
+Route::get('/generate/confirm', 'App\Http\Controllers\VoucherController@generateVoucher');
 
 // Route::get('/vouchers/search', 'App\Http\Controllers\VoucherController@search');
 

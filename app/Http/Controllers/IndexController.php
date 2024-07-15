@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Catalog;
 
 class IndexController extends Controller
 {
@@ -33,6 +34,7 @@ class IndexController extends Controller
 
     public function indexGenerate()
     {
-        //
+        $catalogs = Catalog::all();
+        return view('indexes.indexGenerate', ['catalogs' => $catalogs]);
     }
 }

@@ -9,6 +9,7 @@ class TicketPool extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = 'ticket_pools';
     protected $fillable = [
         'id',

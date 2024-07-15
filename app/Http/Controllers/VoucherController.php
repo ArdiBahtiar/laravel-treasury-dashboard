@@ -35,13 +35,14 @@ class VoucherController extends Controller
         $vocer = $request->input('vocer');
         $date = now()->format('Y-m-d');
         $tomorrow = now()->addDay()->format('Y-m-d');
+        $redeem_date = date('Y-m-d', strtotime("-1 year"));
         $uuid = Str::uuid()->toString();
         
         $TicketPool = TicketPool::where('folio_id', $vocer)->first();
 
         if ($TicketPool)
         {
-            DB::transaction(function () use ($vocer, $uuid, $date, $tomorrow, $TicketPool)
+            DB::transaction(function () use ($vocer, $uuid, $date, $tomorrow, $redeem_date, $TicketPool)
             {
                 // $catalog = Catalog::find($TicketPool->catalog_id);
                 $catalog = Catalog::where('catalog_id', $TicketPool->catalog_id)->first();
@@ -64,7 +65,7 @@ class VoucherController extends Controller
                     'folio_id' => $vocer,
                     'order_id' => $uuid,
                     'redeemed' => 0,
-                    'redeemed_date' => $date,
+                    'redeemed_date' => $redeem_date,
                     'catalog_id' => $catalog->catalog_id,
                     'product_desc' => $catalog->product_desc,
                     'product_price' => $catalog->product_price,
@@ -149,16 +150,20 @@ class VoucherController extends Controller
         // return redirect()->route('indexes.indexCatalog')->with('status', $insert);
     }
 
-    public function generateVoucher()
+    public function generateVoucher(Request $request)
     {
-        //
-    }
+        $amount = $request->input('amount');
+        $catalog_id = $request->input('catalog_id');
 
-    // public function search(Request $request)
-    // {
-    //     $query = $request->input('query');      // INI NGAMBIL INPUTAN DENGAN NAME query
-    //     // dd($query);                          // ITU DUMP N DIE, CUMA BUAT LIHAT ISINYA DARI VARIABLE
-    //     $tickets = TicketPool::where('folio_id', '=', $query)->get();
-    //     return view('vouchers.searchResult', compact('tickets'));
-    // }
+        for($i = 0; $i < $amount; $i++)
+        {
+            $uuid = Str::uuid()->toString();
+            TicketPool::create([
+                'catalog_id' => $catalog_id,
+                'folio_id' => $uuid,
+            ]);
+        }
+
+        return redirect('/generate');
+    }
 }
