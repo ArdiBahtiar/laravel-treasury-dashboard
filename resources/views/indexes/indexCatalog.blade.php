@@ -1,11 +1,11 @@
-@extends('layouts.app');
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col d-flex justify-content-center">
             <div class="panel panel-default">
-                <div class="panel-heading h3 mb-3 text-white">Input new Catalog</div>
+                <div class="panel-heading h3 mt-2 mb-3 text-white text-center underline">Create new Catalog</div>
                 <div class="panel-body">
 
                     @if (session('status'))
@@ -15,12 +15,30 @@
                     @endif
 
                     <form action="{{ url('/catalog/create') }}" method="GET">
-                        <input type="text" name="catalog_id" placeholder="Catalog ID"> <br>
-                        <input type="text" name="product_desc" placeholder="Product Description"> <br>
-                        <input type="number" name="product_price" placeholder="Product Price"> <br>
-                        <input type="text" name="product_info" placeholder="Additional Info"> <br>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary text-white">Create Catalog</button>
+                        <div class="row">
+                            <div class="col d-grid">
+                                <input type="text" class="w-100" name="catalog_id" placeholder="Catalog ID">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-grid">
+                                <input type="text" class="w-100" name="product_desc" placeholder="Product Description">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-grid">
+                                <input type="number" name="product_price" placeholder="Product Price">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-grid">
+                                <input type="text" name="product_info" placeholder="Additional Info">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center mt-3">
+                                <button type="submit" class="btn btn-primary text-white">Create Catalog</button>
+                            </div>
                         </div>
                     </form>
 
