@@ -17,6 +17,11 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col d-grid mb-3">
+                                <input type="date" name="expiry" class="w-100">
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col d-flex justify-content-center">
                                 <button type="submit" class="btn btn-primary">Update Voucher</button>
                             </div>

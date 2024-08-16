@@ -18,14 +18,16 @@ class VoucherController extends Controller
         $catalog_id = $request->input('catalog_id');
         $date = date('Y-m-d');
         $expiryDate = $request->input('expiry');
+        $orderedVouchers = [];
 
         for($i = 0; $i < $amount; $i++)
         {
             $uuid = Str::uuid()->toString();
-            DB::transaction(function () use ($uuid, $catalog_id, $date, $expiryDate)
+            DB::transaction(function () use ($uuid, $catalog_id, $date, $expiryDate, &$orderedVouchers)
             {
                 $topVoucher = TicketPool::where('catalog_id', $catalog_id)->first();
                 $catalog = Catalog::where('catalog_id', $catalog_id)->first();
+                $orderedVouchers[] = $topVoucher->folio_id;
 
                 Order::create([
                     'order_id' => $uuid,
@@ -54,7 +56,8 @@ class VoucherController extends Controller
             });
         }
 
-        return redirect('/order');
+        // dd($orderedVouchers);
+        return view('vouchers.OrderedTickets', ['orderedVouchers' => $orderedVouchers]);
     }
 
     public function checkRegistry(Request $request)
@@ -84,7 +87,6 @@ class VoucherController extends Controller
         {
             DB::transaction(function () use ($vocer, $uuid, $date, $tomorrow, $redeem_date, $TicketPool)
             {
-                // $catalog = Catalog::find($TicketPool->catalog_id);
                 $catalog = Catalog::where('catalog_id', $TicketPool->catalog_id)->first();
                 TicketPool::where('folio_id', $vocer)->delete();
                 
@@ -125,7 +127,8 @@ class VoucherController extends Controller
 
         if(!$cartItem)
         {
-            return redirect()->back()->with('error', 'Invalid Bos');
+            // return redirect()->back()->with('message', 'Invalid Bos');
+            return view('vouchers.ActivatorStatus', ['message' => 'Invalid Voucher']);
         }
 
         if($cartItem->redeemed)
@@ -159,14 +162,13 @@ class VoucherController extends Controller
     
     public function updateExpiry(Request $request)
     {
-        $date = date('Y-m-d');
-
+        // $date = date('Y-m-d');
+        $date = $request->input('expiry');
         $query = $request->input('query');
-        // $cartItems = CartItem::where('folio_id', $query)->get();         // PAKE GET() KALO MAU DIAMBIL SEMUA DATA DARI QUERY
         $orderID = CartItem::where('folio_id', $query)->value('order_id');
         $orders = Order::where('order_id', $orderID)->update(['visit_date' => $date]);
 
-        return view('vouchers.searchResult', ['orders' => $orders]);
+        return view('vouchers.UpdateExpiry', ['orders' => $orders]);
     }
 
     public function createCatalog(Request $request)
@@ -184,16 +186,15 @@ class VoucherController extends Controller
         ];
 
         $insert = Catalog::insert($data);
-        // $insert = Catalog::insert("INSERT INTO catalogs (catalog_id, product_desc, product_price, product_info) VALUES ('$catalog_id', '$product_desc', $product_price, '$product_info')");
-
+        
         return redirect('/catalog')->with('status', $insert);
-        // return redirect()->route('indexes.indexCatalog')->with('status', $insert);
     }
 
     public function generateVoucher(Request $request)
     {
         $amount = $request->input('amount');
         $catalog_id = $request->input('catalog_id');
+        $generatedVouchers = [];
 
         for($i = 0; $i < $amount; $i++)
         {
@@ -202,8 +203,10 @@ class VoucherController extends Controller
                 'catalog_id' => $catalog_id,
                 'folio_id' => $uuid,
             ]);
+            $generatedVouchers[] = $uuid;
         }
-
-        return redirect('/generate');
+        
+        // dd($generatedVouchers);
+        return view('vouchers.GeneratedVouchers', ['generatedVouchers' => $generatedVouchers]);
     }
 }

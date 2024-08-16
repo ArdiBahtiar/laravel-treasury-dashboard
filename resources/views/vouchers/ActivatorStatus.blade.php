@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Voucher Status</title>
-</head>
-<body>
-    <p>{{ $message }}</p>
-    <a href="/activate">Kembali ke Halaman Awal</a>
-</body>
-</html>
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row">
+        <div class="col d-flex justify-content-center mt-2">
+            <p class="text-white">{{ $message }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex justify-content-center">
+            <a href="{{ url('/activate') }}" class="btn btn-primary">Kembali</a>
+        </div>
+    </div>
+</div>
+@endsection
