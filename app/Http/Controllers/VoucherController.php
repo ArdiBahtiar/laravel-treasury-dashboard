@@ -69,7 +69,7 @@ class VoucherController extends Controller
         {
             return view('vouchers.RegisterClaim', ['vocer' => $vocer]);
         } else {
-            return redirect()->back()->with('error', 'Invalid Voucher');    
+            return redirect()->back()->with('status', 'Invalid Voucher');    
         }
     }
     
@@ -114,7 +114,7 @@ class VoucherController extends Controller
                 ]);
             });
 
-            return redirect('/registerVoucher');
+            return redirect('/registerVoucher')->with('status', 'Voucher Registered Succesfully');
         }
     }
 
@@ -154,10 +154,10 @@ class VoucherController extends Controller
             $cartItem->redeemed_date = now()->toDateString();
             $cartItem->save();
 
-            return redirect('/activate')->with('message', 'Voucher berhasil diklaim!');
+            return redirect('/activate')->with('status', 'Voucher berhasil diklaim!');
         }
 
-        return redirect('/activate')->with('error', 'Voucher gagal diklaim.');
+        return redirect('/activate')->with('status', 'Voucher gagal diklaim.');
     }
     
     public function updateExpiry(Request $request)
@@ -166,9 +166,17 @@ class VoucherController extends Controller
         $date = $request->input('expiry');
         $query = $request->input('query');
         $orderID = CartItem::where('folio_id', $query)->value('order_id');
-        $orders = Order::where('order_id', $orderID)->update(['visit_date' => $date]);
-
-        return view('vouchers.UpdateExpiry', ['orders' => $orders]);
+        
+        if($orderID)
+        {
+            Order::where('order_id', $orderID)->update(['visit_date' => $date]);
+            // return view('vouchers.UpdateExpiry', ['orders' => $orders]);
+            return redirect('/expiry')->with('status', 'Voucher Expiry Updated!');
+        }
+        else
+        {
+            return redirect('/expiry')->with('status', 'Invalid Voucher');
+        }
     }
 
     public function createCatalog(Request $request)
@@ -187,7 +195,7 @@ class VoucherController extends Controller
 
         $insert = Catalog::insert($data);
         
-        return redirect('/catalog')->with('status', $insert);
+        return redirect('/catalog')->with('status', 'Catalog Created Successfully');
     }
 
     public function generateVoucher(Request $request)
